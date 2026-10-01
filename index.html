@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio & Image to Video Studio Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-full flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">AudioVision Pro</h1>
+                <p class="text-xs text-slate-400">Convert MP3 + Image into Video with Draggable Elements & MM:SS Trackers</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span id="status-badge" class="px-3 py-1 text-xs font-medium rounded-full bg-slate-800 text-slate-300 border border-slate-700">Ready</span>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden">
+        
+        <!-- Left Panel: Controls & Customization (5 cols) -->
+        <section class="lg:col-span-5 flex flex-col bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl backdrop-blur-sm overflow-y-auto custom-scrollbar space-y-6">
+            
+            <!-- Step 1: Upload Audio -->
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center justify-between">
+                    <span>1. Upload MP3 / Audio</span>
+                    <span id="audio-file-name" class="text-slate-400 font-normal normal-case truncate max-w-[200px]">No file chosen</span>
+                </label>
+                <div class="relative group">
+                    <input type="file" id="audio-input" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div class="border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-3 text-center bg-slate-900/80 transition-all group-hover:bg-indigo-950/20 flex items-center justify-center space-x-3">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                        </svg>
+                        <span class="text-xs font-medium text-slate-300">Drop MP3 audio or click to browse</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Upload Image -->
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center justify-between">
+                    <span>2. Upload Cover Image</span>
+                    <span id="image-file-name" class="text-slate-400 font-normal normal-case truncate max-w-[200px]">No file chosen</span>
+                </label>
+                <div class="relative group">
+                    <input type="file" id="image-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div class="border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-3 text-center bg-slate-900/80 transition-all group-hover:bg-indigo-950/20 flex items-center justify-center space-x-3">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-xs font-medium text-slate-300">Drop Cover Art or click to browse</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Layout & Video Resolution -->
+            <div class="space-y-4 pt-2 border-t border-slate-800">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">3. Video Canvas & Ratio</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Aspect Ratio</label>
+                        <select id="aspect-ratio" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="16:9">Landscape (16:9)</option>
+                            <option value="9:16">Story / Reel (9:16)</option>
+                            <option value="1:1">Square (1:1)</option>
+                            <option value="4:3">Classic (4:3)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Base Resolution</label>
+                        <select id="video-res" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="720">HD (720p)</option>
+                            <option value="1080">Full HD (1080p)</option>
+                            <option value="480">SD (480p)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background Customization Section -->
+            <div class="space-y-4 pt-2 border-t border-slate-800">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Background Styling</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Base BG Color</label>
+                        <input type="color" id="bg-color" value="#030712" class="w-full h-9 bg-slate-950 border border-slate-700 rounded-xl cursor-pointer p-1">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Backdrop Blur</label>
+                        <input type="range" id="bg-blur" min="0" max="40" value="15" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 mt-2 cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Visualizer & Particle Customization -->
+            <div class="space-y-4 pt-2 border-t border-slate-800">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">4. Visualizer & Particles</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Visualizer Style</label>
+                        <select id="viz-style" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="bars">Frequency Bars</option>
+                            <option value="waveform">Waveform Line</option>
+                            <option value="pulsate">Pulsating Art</option>
+                            <option value="circular">Circular Spectrum</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Visualizer Color</label>
+                        <input type="color" id="viz-color" value="#6366f1" class="w-full h-9 bg-slate-950 border border-slate-700 rounded-xl cursor-pointer p-1">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Background Particles</label>
+                        <select id="particle-effect" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="none">None</option>
+                            <option value="dust">Floating Dust</option>
+                            <option value="snow">Snowfall</option>
+                            <option value="stars">Twinkling Stars</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Progress Bar, Circle Thumb & MM:SS Timer Settings -->
+            <div class="space-y-4 pt-2 border-t border-slate-800">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">5. Progress Bar & Circle</h3>
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="show-progressbar" checked class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0">
+                        <span>Show Bar</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Layout Style</label>
+                        <select id="pb-style" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-2 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="bottom">Bottom Bar</option>
+                            <option value="pill">Floating Pill</option>
+                            <option value="thin">Top Edge Line</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Bar Color</label>
+                        <input type="color" id="pb-color" value="#a855f7" class="w-full h-9 bg-slate-950 border border-slate-700 rounded-xl cursor-pointer p-1">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Bar Height</label>
+                        <input type="range" id="pb-height" min="4" max="24" value="8" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 mt-2 cursor-pointer">
+                    </div>
+                </div>
+                <!-- Circle Thumb Options -->
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="show-circle-thumb" checked class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0">
+                        <span>Show Circle Thumb on Bar</span>
+                    </label>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Circle Color</label>
+                        <input type="color" id="circle-color" value="#ffffff" class="w-full h-9 bg-slate-950 border border-slate-700 rounded-xl cursor-pointer p-1">
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="show-time-text" checked class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0">
+                        <span>Show MM:SS Timer text (e.g., 01:23 / 03:45)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 6: Advanced Image Filters -->
+            <div class="space-y-4 pt-2 border-t border-slate-800">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">6. Image Filters</h3>
+                    <button id="reset-filters" class="text-xs text-slate-400 hover:text-indigo-400 underline">Reset</button>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs text-slate-400"><span>Brightness</span><span id="val-brightness">100%</span></div>
+                        <input type="range" id="filter-brightness" min="0" max="200" value="100" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs text-slate-400"><span>Contrast</span><span id="val-contrast">100%</span></div>
+                        <input type="range" id="filter-contrast" min="0" max="200" value="100" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs text-slate-400"><span>Saturation</span><span id="val-saturation">100%</span></div>
+                        <input type="range" id="filter-saturation" min="0" max="200" value="100" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs text-slate-400"><span>Sepia</span><span id="val-sepia">0%</span></div>
+                        <input type="range" id="filter-sepia" min="0" max="100" value="0" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs text-slate-400"><span>Vignette</span><span id="val-vignette">40%</span></div>
+                        <input type="range" id="filter-vignette" min="0" max="100" value="40" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: Text Overlays -->
+            <div class="space-y-4 pt-2 border-t border-slate-800">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">7. Song Title & Artist</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Song Title</label>
+                        <input type="text" id="text-title" placeholder="Track Name" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Artist Name</label>
+                        <input type="text" id="text-artist" placeholder="Artist" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Text Color</label>
+                        <input type="color" id="text-color" value="#ffffff" class="w-full h-9 bg-slate-950 border border-slate-700 rounded-xl cursor-pointer p-1">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Text Alignment</label>
+                        <select id="text-align" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="left">Left</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="pt-4 border-t border-slate-800 space-y-3">
+                <div class="flex space-x-3">
+                    <button id="preview-btn" disabled class="flex-1 py-3 px-4 rounded-xl bg-slate-800 text-slate-400 font-semibold text-xs transition-all flex items-center justify-center space-x-2 cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span id="preview-btn-text">Preview / Play</span>
+                    </button>
+                    
+                    <button id="record-btn" disabled class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        <span id="record-btn-text">Export Video (.webm)</span>
+                    </button>
+                </div>
+
+                <!-- Progress Bar container -->
+                <div id="progress-container" class="hidden space-y-1">
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span id="progress-label">Encoding video...</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full w-0 transition-all duration-150"></div>
+                    </div>
+                </div>
+
+                <!-- Download Link Container -->
+                <div id="download-container" class="hidden">
+                    <a id="download-link" download="audiovision.webm" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span>Download Final Video</span>
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Panel: Canvas & Preview Screen (7 cols) -->
+        <section class="lg:col-span-7 flex flex-col bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl backdrop-blur-sm justify-between items-center relative overflow-hidden">
+            
+            <div class="w-full mb-2 flex items-center justify-between text-xs text-indigo-300 bg-indigo-950/40 px-3 py-1.5 rounded-lg border border-indigo-900/40">
+                <span class="flex items-center space-x-1.5">
+                    <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span><strong>Interactive Canvas:</strong> Click and drag elements anywhere on the screen!</span>
+                </span>
+                <button id="reset-positions" class="text-[11px] underline text-slate-400 hover:text-white">Reset Layout</button>
+            </div>
+
+            <!-- Video Preview Stage -->
+            <div id="canvas-container" class="w-full flex-1 flex items-center justify-center relative bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden min-h-[360px] select-none">
+                <canvas id="canvas" width="1280" height="720" class="max-w-full max-h-[62vh] object-contain shadow-2xl rounded-lg cursor-crosshair"></canvas>
+                
+                <!-- Empty Placeholder -->
+                <div id="canvas-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 space-y-2 bg-slate-950/90 pointer-events-none">
+                    <svg class="w-12 h-12 stroke-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                    <p class="text-sm font-medium">Upload audio & cover image to initialize interactive canvas</p>
+                </div>
+            </div>
+
+            <!-- Audio Time / Scrubbing bar -->
+            <div class="w-full mt-4 space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-400">
+                    <span id="current-time">0:00</span>
+                    <span id="duration-time">0:00</span>
+                </div>
+                <input type="range" id="seek-bar" value="0" max="100" step="0.1" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        // DOM Elements
+        const audioInput = document.getElementById('audio-input');
+        const imageInput = document.getElementById('image-input');
+        const audioFileName = document.getElementById('audio-file-name');
+        const imageFileName = document.getElementById('image-file-name');
+        const previewBtn = document.getElementById('preview-btn');
+        const previewBtnText = document.getElementById('preview-btn-text');
+        const recordBtn = document.getElementById('record-btn');
+        const recordBtnText = document.getElementById('record-btn-text');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const canvasPlaceholder = document.getElementById('canvas-placeholder');
+        const vizStyleSelect = document.getElementById('viz-style');
+        const vizColorInput = document.getElementById('viz-color');
+        const aspectRatioSelect = document.getElementById('aspect-ratio');
+        const videoResSelect = document.getElementById('video-res');
+        const particleEffectSelect = document.getElementById('particle-effect');
+        const bgBlurInput = document.getElementById('bg-blur');
+        const bgColorInput = document.getElementById('bg-color');
+        
+        // Progress Bar Elements
+        const showProgressCheckbox = document.getElementById('show-progressbar');
+        const pbStyleSelect = document.getElementById('pb-style');
+        const pbColorInput = document.getElementById('pb-color');
+        const pbHeightInput = document.getElementById('pb-height');
+        const showCircleThumbCheckbox = document.getElementById('show-circle-thumb');
+        const circleColorInput = document.getElementById('circle-color');
+        const showTimeTextCheckbox = document.getElementById('show-time-text');
+
+        // Filter Elements
+        const filterBrightness = document.getElementById('filter-brightness');
+        const filterContrast = document.getElementById('filter-contrast');
+        const filterSaturation = document.getElementById('filter-saturation');
+        const filterSepia = document.getElementById('filter-sepia');
+        const filterVignette = document.getElementById('filter-vignette');
+        const resetFiltersBtn = document.getElementById('reset-filters');
+        
+        const valBrightness = document.getElementById('val-brightness');
+        const valContrast = document.getElementById('val-contrast');
+        const valSaturation = document.getElementById('val-saturation');
+        const valSepia = document.getElementById('val-sepia');
+        const valVignette = document.getElementById('val-vignette');
+
+        // Text Overlay Elements
+        const textTitleInput = document.getElementById('text-title');
+        const textArtistInput = document.getElementById('text-artist');
+        const textColorInput = document.getElementById('text-color');
+        const textAlignSelect = document.getElementById('text-align');
+        const resetPositionsBtn = document.getElementById('reset-positions');
+
+        const seekBar = document.getElementById('seek-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationTimeEl = document.getElementById('duration-time');
+        const statusBadge = document.getElementById('status-badge');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressLabel = document.getElementById('progress-label');
+        const progressPct = document.getElementById('progress-pct');
+        const downloadContainer = document.getElementById('download-container');
+        const downloadLink = document.getElementById('download-link');
+
+        // State & Audio Variables
+        let audioCtx = null;
+        let audioElement = null;
+        let audioSourceNode = null;
+        let analyser = null;
+        let audioFileUrl = null;
+        let coverImage = null;
+        let isPlaying = false;
+        let isRecording = false;
+        let animationId = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let audioDuration = 0;
+
+        // Interactive Draggable Elements Positions & Sizes
+        let layout = {
+            coverArt: { x: 640, y: 320, width: 450, height: 450 },
+            textOverlay: { x: 640, y: 600 },
+            visualizer: { x: 640, y: 580 },
+            progressBar: { x: 640, y: 670, width: 800 }
+        };
+
+        const defaultLayout = JSON.parse(JSON.stringify(layout));
+        let activeDraggable = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Particles array
+        let particles = [];
+        const MAX_PARTICLES = 60;
+
+        const defaultImg = new Image();
+        defaultImg.src = "https://placehold.co/1280x720/1e1b4b/818cf8?text=AudioVision+Cover";
+        coverImage = defaultImg;
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < MAX_PARTICLES; i++) {
+                particles.push({
+                    x: Math.random() * 1920,
+                    y: Math.random() * 1080,
+                    size: Math.random() * 3 + 1,
+                    speedY: (Math.random() * 1.5 + 0.5) * (Math.random() > 0.5 ? 1 : -0.5),
+                    speedX: (Math.random() * 1 - 0.5),
+                    alpha: Math.random() * 0.8 + 0.2
+                });
+            }
+        }
+        initParticles();
+
+        function updateFilterLabels() {
+            valBrightness.textContent = filterBrightness.value + '%';
+            valContrast.textContent = filterContrast.value + '%';
+            valSaturation.textContent = filterSaturation.value + '%';
+            valSepia.textContent = filterSepia.value + '%';
+            valVignette.textContent = filterVignette.value + '%';
+        }
+
+        [filterBrightness, filterContrast, filterSaturation, bgBlurInput, bgColorInput, filterSepia, filterVignette].forEach(el => {
+            el.addEventListener('input', () => {
+                updateFilterLabels();
+                if (!isPlaying && !isRecording) drawStaticFrame();
+            });
+        });
+
+        resetFiltersBtn.addEventListener('click', () => {
+            filterBrightness.value = 100;
+            filterContrast.value = 100;
+            filterSaturation.value = 100;
+            bgBlurInput.value = 15;
+            bgColorInput.value = '#030712';
+            filterSepia.value = 0;
+            filterVignette.value = 40;
+            updateFilterLabels();
+            if (!isPlaying && !isRecording) drawStaticFrame();
+        });
+
+        resetPositionsBtn.addEventListener('click', () => {
+            layout = JSON.parse(JSON.stringify(defaultLayout));
+            if (!isPlaying && !isRecording) drawStaticFrame();
+        });
+
+        audioInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            audioFileName.textContent = file.name;
+            if (!textTitleInput.value) {
+                let nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                textTitleInput.value = nameWithoutExt;
+            }
+
+            if (audioFileUrl) URL.revokeObjectURL(audioFileUrl);
+            audioFileUrl = URL.createObjectURL(file);
+
+            if (audioElement) {
+                audioElement.pause();
+                audioElement.remove();
+            }
+
+            audioElement = new Audio(audioFileUrl);
+            audioElement.crossOrigin = "anonymous";
+
+            audioElement.addEventListener('loadedmetadata', () => {
+                audioDuration = audioElement.duration;
+                durationTimeEl.textContent = formatTime(audioDuration);
+                checkReadyState();
+            });
+
+            audioElement.addEventListener('timeupdate', () => {
+                if (!audioElement.duration) return;
+                const pct = (audioElement.currentTime / audioElement.duration) * 100;
+                seekBar.value = pct;
+                currentTimeEl.textContent = formatTime(audioElement.currentTime);
+            });
+
+            audioElement.addEventListener('ended', () => {
+                stopPlayback();
+                if (isRecording) stopRecording();
+            });
+
+            const reader = new FileReader();
+            reader.onload = async (evt) => {
+                setupAudioContext();
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            imageFileName.textContent = file.name;
+            const imgUrl = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                coverImage = img;
+                checkReadyState();
+                drawStaticFrame();
+            };
+            img.src = imgUrl;
+        });
+
+        function checkReadyState() {
+            if (audioElement && coverImage) {
+                previewBtn.disabled = false;
+                previewBtn.classList.remove('bg-slate-800', 'text-slate-400', 'cursor-not-allowed');
+                previewBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-600/30');
+
+                recordBtn.disabled = false;
+                recordBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                canvasPlaceholder.style.display = 'none';
+                drawStaticFrame();
+            }
+        }
+
+        function setupAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioSourceNode) {
+                try { audioSourceNode.disconnect(); } catch(err) {}
+            }
+
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+
+            audioSourceNode = audioCtx.createMediaElementSource(audioElement);
+            audioSourceNode.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateCanvasDimensions() {
+            const ratio = aspectRatioSelect.value;
+            const resBase = parseInt(videoResSelect.value, 10);
+            let width = 1280, height = 720;
+
+            if (ratio === '16:9') { height = resBase; width = Math.round(resBase * (16 / 9)); }
+            else if (ratio === '9:16') { height = resBase; width = Math.round(resBase * (9 / 16)); }
+            else if (ratio === '1:1') { height = resBase; width = resBase; }
+            else if (ratio === '4:3') { height = resBase; width = Math.round(resBase * (4 / 3)); }
+
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        function getCanvasCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const coords = getCanvasCoordinates(e);
+            
+            const ca = layout.coverArt;
+            if (coords.x >= ca.x - ca.width/2 && coords.x <= ca.x + ca.width/2 && coords.y >= ca.y - ca.height/2 && coords.y <= ca.y + ca.height/2) {
+                activeDraggable = 'coverArt';
+                dragOffset.x = coords.x - ca.x;
+                dragOffset.y = coords.y - ca.y;
+                return;
+            }
+
+            const to = layout.textOverlay;
+            if (coords.x >= to.x - 200 && coords.x <= to.x + 200 && coords.y >= to.y - 40 && coords.y <= to.y + 60) {
+                activeDraggable = 'textOverlay';
+                dragOffset.x = coords.x - to.x;
+                dragOffset.y = coords.y - to.y;
+                return;
+            }
+
+            const pb = layout.progressBar;
+            if (coords.x >= pb.x - pb.width/2 && coords.x <= pb.x + pb.width/2 && coords.y >= pb.y - 25 && coords.y <= pb.y + 25) {
+                activeDraggable = 'progressBar';
+                dragOffset.x = coords.x - pb.x;
+                dragOffset.y = coords.y - pb.y;
+                return;
+            }
+
+            const viz = layout.visualizer;
+            if (coords.x >= viz.x - 200 && coords.x <= viz.x + 200 && coords.y >= viz.y - 40 && coords.y <= viz.y + 40) {
+                activeDraggable = 'visualizer';
+                dragOffset.x = coords.x - viz.x;
+                dragOffset.y = coords.y - viz.y;
+                return;
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!activeDraggable) return;
+            const coords = getCanvasCoordinates(e);
+            layout[activeDraggable].x = coords.x - dragOffset.x;
+            layout[activeDraggable].y = coords.y - dragOffset.y;
+            if (!isPlaying && !isRecording) drawStaticFrame();
+        });
+
+        window.addEventListener('mouseup', () => {
+            activeDraggable = null;
+        });
+
+        function drawFrame() {
+            updateCanvasDimensions();
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // 0. Solid Custom Background Layer
+            ctx.save();
+            ctx.fillStyle = bgColorInput.value;
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+
+            // 1. Blurred Background Image Layer
+            ctx.save();
+            const bVal = filterBrightness.value;
+            const cVal = filterContrast.value;
+            const sVal = filterSaturation.value;
+            const sepVal = filterSepia.value;
+            const blurVal = parseInt(bgBlurInput.value, 10);
+            const filterStr = `brightness(${bVal}%) contrast(${cVal}%) saturate(${sVal}%) sepia(${sepVal}%)`;
+
+            if (blurVal > 0) {
+                ctx.filter = `${filterStr} blur(${blurVal}px) brightness(0.35)`;
+                ctx.drawImage(coverImage, -50, -50, width + 100, height + 100);
+            }
+            ctx.restore();
+
+            // Gradient shade overlay
+            ctx.save();
+            const grad = ctx.createLinearGradient(0, 0, 0, height);
+            grad.addColorStop(0, 'rgba(0,0,0,0.2)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.6)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+
+            // 2. Cover Art Image
+            let dataArray = new Uint8Array(0);
+            if (analyser) {
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(dataArray);
+            }
+
+            const vizStyle = vizStyleSelect.value;
+            let pulseScale = 1;
+            if (vizStyle === 'pulsate' && dataArray.length > 0) {
+                let sum = 0;
+                for (let i = 0; i < 10; i++) sum += dataArray[i];
+                pulseScale = 1 + (sum / 255 / 10) * 0.15;
+            }
+
+            ctx.save();
+            ctx.filter = filterStr;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+            ctx.shadowBlur = 40;
+            ctx.translate(layout.coverArt.x, layout.coverArt.y);
+            ctx.scale(pulseScale, pulseScale);
+
+            const caW = layout.coverArt.width;
+            const caH = layout.coverArt.height;
+            ctx.beginPath();
+            ctx.roundRect(-caW / 2, -caH / 2, caW, caH, 16);
+            ctx.clip();
+            ctx.drawImage(coverImage, -caW / 2, -caH / 2, caW, caH);
+            ctx.restore();
+
+            // 3. Audio Visualizer
+            const vizColor = vizColorInput.value;
+            if (vizStyle !== 'none' && dataArray.length > 0) {
+                ctx.save();
+                ctx.translate(layout.visualizer.x, layout.visualizer.y);
+
+                if (vizStyle === 'bars') {
+                    const barCount = 40;
+                    const barW = 8;
+                    const gap = 4;
+                    const totalW = barCount * (barW + gap);
+                    ctx.translate(-totalW / 2, 0);
+
+                    for (let i = 0; i < barCount; i++) {
+                        const val = dataArray[i] || 0;
+                        const barH = (val / 255) * 60;
+                        ctx.fillStyle = vizColor;
+                        ctx.beginPath();
+                        ctx.roundRect(i * (barW + gap), -barH / 2, barW, Math.max(barH, 4), 3);
+                        ctx.fill();
+                    }
+                } else if (vizStyle === 'waveform') {
+                    ctx.strokeStyle = vizColor;
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    const wLine = 300;
+                    const sliceW = wLine / dataArray.length;
+                    ctx.translate(-wLine / 2, 0);
+
+                    for (let i = 0; i < dataArray.length; i++) {
+                        const v = dataArray[i] / 128.0;
+                        const y = (v - 1) * 30;
+                        if (i === 0) ctx.moveTo(i * sliceW, y);
+                        else ctx.lineTo(i * sliceW, y);
+                    }
+                    ctx.stroke();
+                } else if (vizStyle === 'circular') {
+                    const radius = 60;
+                    const count = 36;
+                    const angleStep = (Math.PI * 2) / count;
+                    ctx.strokeStyle = vizColor;
+                    ctx.lineWidth = 4;
+                    ctx.lineCap = 'round';
+
+                    for (let i = 0; i < count; i++) {
+                        const val = dataArray[i] || 0;
+                        const barLen = (val / 255) * 40;
+                        const angle = i * angleStep;
+                        const x1 = Math.cos(angle) * radius;
+                        const y1 = Math.sin(angle) * radius;
+                        const x2 = Math.cos(angle) * (radius + barLen);
+                        const y2 = Math.sin(angle) * (radius + barLen);
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                }
+                ctx.restore();
+            }
+
+            // 4. Particles
+            const pEffect = particleEffectSelect.value;
+            if (pEffect !== 'none') {
+                ctx.save();
+                ctx.fillStyle = pEffect === 'snow' ? '#ffffff' : (pEffect === 'stars' ? '#fde047' : '#94a3b8');
+                particles.forEach(p => {
+                    p.y -= p.speedY;
+                    p.x += p.speedX;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.restore();
+            }
+
+            // 5. Progress Bar, Circle Thumb & MM:SS Timer Text
+            if (showProgressCheckbox.checked && audioElement && audioElement.duration) {
+                ctx.save();
+                const pbStyle = pbStyleSelect.value;
+                const pbColor = pbColorInput.value;
+                const pbHeight = parseInt(pbHeightInput.value, 10);
+                const progressPctVal = audioElement.currentTime / audioElement.duration;
+                const pbW = layout.progressBar.width;
+                const pbX = layout.progressBar.x - pbW / 2;
+                const pbY = layout.progressBar.y;
+
+                if (pbStyle === 'bottom' || pbStyle === 'pill') {
+                    // Track Background
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.beginPath();
+                    ctx.roundRect(pbX, pbY, pbW, pbHeight, pbHeight / 2);
+                    ctx.fill();
+
+                    // Filled Track Progress
+                    let filledWidth = Math.max(pbHeight, pbW * progressPctVal);
+                    if (progressPctVal > 0) {
+                        ctx.fillStyle = pbColor;
+                        ctx.beginPath();
+                        ctx.roundRect(pbX, pbY, filledWidth, pbHeight, pbHeight / 2);
+                        ctx.fill();
+                    }
+
+                    // Circle Thumb on Progress Bar
+                    if (showCircleThumbCheckbox.checked) {
+                        const circleX = pbX + (pbW * progressPctVal);
+                        const circleY = pbY + (pbHeight / 2);
+                        const circleRadius = pbHeight * 0.9;
+
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                        ctx.shadowBlur = 6;
+                        ctx.fillStyle = circleColorInput.value;
+                        ctx.beginPath();
+                        ctx.arc(circleX, circleY, circleRadius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                } else if (pbStyle === 'thin') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fillRect(0, 0, width, pbHeight);
+                    if (progressPctVal > 0) {
+                        ctx.fillStyle = pbColor;
+                        ctx.fillRect(0, 0, width * progressPctVal, pbHeight);
+                    }
+                }
+
+                // MM:SS Tracker Text
+                if (showTimeTextCheckbox.checked) {
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+                    ctx.textAlign = 'center';
+                    const timeStr = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+                    ctx.fillText(timeStr, layout.progressBar.x, pbY + pbHeight + 22);
+                }
+                ctx.restore();
+            }
+
+            // 6. Vignette
+            const vigVal = parseInt(filterVignette.value, 10);
+            if (vigVal > 0) {
+                ctx.save();
+                const outerRadius = Math.sqrt(width * width + height * height) / 2;
+                const gradient = ctx.createRadialGradient(width / 2, height / 2, outerRadius * 0.4, width / 2, height / 2, outerRadius);
+                gradient.addColorStop(0, 'rgba(0,0,0,0)');
+                gradient.addColorStop(1, `rgba(0,0,0,${vigVal / 100})`);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                ctx.restore();
+            }
+
+            // 7. Song Title & Artist Text Overlay
+            const titleText = textTitleInput.value.trim();
+            const artistText = textArtistInput.value.trim();
+            const textColor = textColorInput.value;
+            const align = textAlignSelect.value;
+
+            if (titleText || artistText) {
+                ctx.save();
+                ctx.fillStyle = textColor;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                ctx.shadowBlur = 8;
+                ctx.textAlign = align;
+
+                let textX = layout.textOverlay.x;
+                let textY = layout.textOverlay.y;
+
+                if (titleText) {
+                    ctx.font = `bold ${Math.round(height * 0.04)}px 'Plus Jakarta Sans', sans-serif`;
+                    ctx.fillText(titleText, textX, textY);
+                    textY += Math.round(height * 0.048);
+                }
+                if (artistText) {
+                    ctx.font = `${Math.round(height * 0.03)}px 'Plus Jakarta Sans', sans-serif`;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.fillText(artistText, textX, textY);
+                }
+                ctx.restore();
+            }
+
+            if (isPlaying || isRecording) {
+                animationId = requestAnimationFrame(drawFrame);
+            }
+        }
+
+        function drawStaticFrame() {
+            if (isPlaying || isRecording) return;
+            drawFrame();
+        }
+
+        previewBtn.addEventListener('click', () => {
+            if (!audioElement || !coverImage) return;
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (isPlaying) stopPlayback();
+            else startPlayback();
+        });
+
+        function startPlayback() {
+            isPlaying = true;
+            audioElement.play();
+            previewBtnText.textContent = "Pause Preview";
+            statusBadge.textContent = "Playing Preview";
+            statusBadge.className = "px-3 py-1 text-xs font-medium rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30";
+            drawFrame();
+        }
+
+        function stopPlayback() {
+            isPlaying = false;
+            if (audioElement) audioElement.pause();
+            if (animationId) cancelAnimationFrame(animationId);
+            previewBtnText.textContent = "Preview / Play";
+            statusBadge.textContent = "Ready";
+            statusBadge.className = "px-3 py-1 text-xs font-medium rounded-full bg-slate-800 text-slate-300 border border-slate-700";
+            drawStaticFrame();
+        }
+
+        seekBar.addEventListener('input', (e) => {
+            if (!audioElement || !audioElement.duration) return;
+            const time = (e.target.value / 100) * audioElement.duration;
+            audioElement.currentTime = time;
+            currentTimeEl.textContent = formatTime(time);
+            if (!isPlaying && !isRecording) drawStaticFrame();
+        });
+
+        recordBtn.addEventListener('click', async () => {
+            if (!audioElement || !coverImage) return;
+            if (isRecording) { stopRecording(); return; }
+            if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+
+            audioElement.currentTime = 0;
+            if (isPlaying) stopPlayback();
+
+            recordedChunks = [];
+            progressContainer.classList.remove('hidden');
+            downloadContainer.classList.add('hidden');
+            recordBtnText.textContent = "Stop & Export";
+            statusBadge.textContent = "Encoding Video...";
+            statusBadge.className = "px-3 py-1 text-xs font-medium rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30";
+            isRecording = true;
+
+            const canvasStream = canvas.captureStream(30);
+            const destNode = audioCtx.createMediaStreamDestination();
+            audioSourceNode.connect(destNode);
+
+            const combinedStream = new MediaStream([
+                ...canvasStream.getVideoTracks(),
+                ...destNode.stream.getAudioTracks()
+            ]);
+
+            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm;codecs=vp8,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
+
+            try {
+                mediaRecorder = new MediaRecorder(combinedStream, options);
+            } catch (err) {
+                alert("MediaRecorder error: " + err.message);
+                stopRecording();
+                return;
+            }
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data && event.data.size > 0) recordedChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(blob);
+                downloadLink.href = videoUrl;
+                downloadLink.download = `AudioVision_${Date.now()}.webm`;
+                downloadContainer.classList.remove('hidden');
+                progressContainer.classList.add('hidden');
+                statusBadge.textContent = "Export Complete!";
+                statusBadge.className = "px-3 py-1 text-xs font-medium rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                recordBtnText.textContent = "Export Video";
+                isRecording = false;
+            };
+
+            mediaRecorder.start(1000);
+            audioElement.play();
+            drawFrame();
+
+            const progressInterval = setInterval(() => {
+                if (!isRecording || !audioElement.duration) { clearInterval(progressInterval); return; }
+                const pct = Math.min(100, Math.round((audioElement.currentTime / audioElement.duration) * 100));
+                progressBar.style.width = `${pct}%`;
+                progressPct.textContent = `${pct}%`;
+                progressLabel.textContent = `Encoding video (${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)})...`;
+
+                if (audioElement.ended || audioElement.currentTime >= audioElement.duration) {
+                    clearInterval(progressInterval);
+                    stopRecording();
+                }
+            }, 200);
+        });
+
+        function stopRecording() {
+            if (!isRecording) return;
+            isRecording = false;
+            if (audioElement) audioElement.pause();
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            if (animationId) cancelAnimationFrame(animationId);
+            recordBtnText.textContent = "Export Video (.webm)";
+            drawStaticFrame();
+        }
+
+        [vizStyleSelect, vizColorInput, aspectRatioSelect, videoResSelect, particleEffectSelect, showProgressCheckbox, pbStyleSelect, pbColorInput, pbHeightInput, showCircleThumbCheckbox, circleColorInput, showTimeTextCheckbox, textTitleInput, textArtistInput, textColorInput, textAlignSelect].forEach(el => {
+            el.addEventListener('input', () => {
+                if (!isPlaying && !isRecording) drawStaticFrame();
+            });
+        });
+
+        window.addEventListener('load', () => {
+            updateFilterLabels();
+            drawStaticFrame();
+        });
+    </script>
+</body>
+</html>
