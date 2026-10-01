@@ -403,6 +403,7 @@
         let isPlaying = false;
         let isRecording = false;
         let animationId = null;
+        let recordingTimer = null; 
         let mediaRecorder = null;
         let recordedChunks = [];
         let audioDuration = 0;
@@ -502,22 +503,21 @@
             });
 
             audioElement.addEventListener('timeupdate', () => {
-                if (!audioElement.duration) return;
+                if (!audioElement.duration || isRecording) return;
                 const pct = (audioElement.currentTime / audioElement.duration) * 100;
                 seekBar.value = pct;
                 currentTimeEl.textContent = formatTime(audioElement.currentTime);
             });
 
             audioElement.addEventListener('ended', () => {
-                stopPlayback();
-                if (isRecording) stopRecording();
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    stopPlayback();
+                }
             });
 
-            const reader = new FileReader();
-            reader.onload = async (evt) => {
-                setupAudioContext();
-            };
-            reader.readAsArrayBuffer(file);
+            setupAudioContext();
         });
 
         imageInput.addEventListener('change', (e) => {
@@ -802,13 +802,11 @@
                 const pbY = layout.progressBar.y;
 
                 if (pbStyle === 'bottom' || pbStyle === 'pill') {
-                    // Track Background
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
                     ctx.beginPath();
                     ctx.roundRect(pbX, pbY, pbW, pbHeight, pbHeight / 2);
                     ctx.fill();
 
-                    // Filled Track Progress
                     let filledWidth = Math.max(pbHeight, pbW * progressPctVal);
                     if (progressPctVal > 0) {
                         ctx.fillStyle = pbColor;
@@ -817,7 +815,6 @@
                         ctx.fill();
                     }
 
-                    // Circle Thumb on Progress Bar
                     if (showCircleThumbCheckbox.checked) {
                         const circleX = pbX + (pbW * progressPctVal);
                         const circleY = pbY + (pbHeight / 2);
@@ -842,7 +839,6 @@
                     }
                 }
 
-                // MM:SS Tracker Text
                 if (showTimeTextCheckbox.checked) {
                     ctx.fillStyle = '#cbd5e1';
                     ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
@@ -895,7 +891,7 @@
                 ctx.restore();
             }
 
-            if (isPlaying || isRecording) {
+            if (isPlaying && !isRecording) {
                 animationId = requestAnimationFrame(drawFrame);
             }
         }
@@ -957,14 +953,22 @@
             isRecording = true;
 
             const canvasStream = canvas.captureStream(30);
+            
+            // Safely tap audio stream via destination node without disconnecting monitor output
             const destNode = audioCtx.createMediaStreamDestination();
-            audioSourceNode.connect(destNode);
+            try {
+                audioSourceNode.disconnect();
+            } catch(e) {}
+            audioSourceNode.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.connect(destNode);
 
             const combinedStream = new MediaStream([
                 ...canvasStream.getVideoTracks(),
                 ...destNode.stream.getAudioTracks()
             ]);
 
+            // Request unlimited timeslice (no chunk time parameter or set to 0/omitted) to allow unlimited continuous recording without splitting blobs
             let options = { mimeType: 'video/webm;codecs=vp9,opus' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm;codecs=vp8,opus' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
@@ -994,30 +998,33 @@
                 isRecording = false;
             };
 
-            mediaRecorder.start(1000);
+            // Started with NO timeslice argument (unlimited recording buffer mode)
+            mediaRecorder.start();
             audioElement.play();
-            drawFrame();
 
-            const progressInterval = setInterval(() => {
-                if (!isRecording || !audioElement.duration) { clearInterval(progressInterval); return; }
+            // Background-safe recording timer loop
+            recordingTimer = setInterval(() => {
+                if (!isRecording || !audioElement.duration) return;
+
+                drawFrame(); 
+
                 const pct = Math.min(100, Math.round((audioElement.currentTime / audioElement.duration) * 100));
                 progressBar.style.width = `${pct}%`;
                 progressPct.textContent = `${pct}%`;
                 progressLabel.textContent = `Encoding video (${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)})...`;
 
                 if (audioElement.ended || audioElement.currentTime >= audioElement.duration) {
-                    clearInterval(progressInterval);
                     stopRecording();
                 }
-            }, 200);
+            }, 33);
         });
 
         function stopRecording() {
             if (!isRecording) return;
             isRecording = false;
             if (audioElement) audioElement.pause();
+            if (recordingTimer) clearInterval(recordingTimer);
             if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-            if (animationId) cancelAnimationFrame(animationId);
             recordBtnText.textContent = "Export Video (.webm)";
             drawStaticFrame();
         }
