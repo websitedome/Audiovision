@@ -26,7 +26,7 @@
             </div>
             <div>
                 <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">AudioVision Pro</h1>
-                <p class="text-xs text-slate-400">Convert MP3 + Image into Video with Draggable Elements & MM:SS Trackers</p>
+                <p class="text-xs text-slate-400">Convert MP3 + Image into Video with Auto/Manual Beats & Shake</p>
             </div>
         </div>
         <div class="flex items-center space-x-3">
@@ -112,9 +112,9 @@
                 </div>
             </div>
 
-            <!-- Step 4: Visualizer & Particle Customization -->
+            <!-- Step 4: Visualizer & Auto/Manual Beat Shake -->
             <div class="space-y-4 pt-2 border-t border-slate-800">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">4. Visualizer & Particles</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">4. Visualizer & Beat Shake</h3>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-xs text-slate-400 block mb-1">Visualizer Style</label>
@@ -131,16 +131,46 @@
                         <input type="color" id="viz-color" value="#6366f1" class="w-full h-9 bg-slate-950 border border-slate-700 rounded-xl cursor-pointer p-1">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Background Particles</label>
-                        <select id="particle-effect" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
-                            <option value="none">None</option>
-                            <option value="dust">Floating Dust</option>
-                            <option value="snow">Snowfall</option>
-                            <option value="stars">Twinkling Stars</option>
-                        </select>
+
+                <!-- Beat Shake Toggles & Intensity -->
+                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center space-x-2 text-xs text-slate-200 cursor-pointer font-semibold">
+                            <input type="checkbox" id="auto-shake-toggle" checked class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0">
+                            <span>Auto Shake on Beat (Bass React)</span>
+                        </label>
                     </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Shake Intensity</label>
+                        <input type="range" id="shake-intensity" min="0" max="30" value="12" class="w-full accent-indigo-500 bg-slate-800 rounded-lg h-2 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Manual Beats Section -->
+                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-200">Manual Beat Markers (<span id="beat-count">0</span>)</span>
+                        <div class="space-x-2">
+                            <button id="clear-beats-btn" class="text-[11px] text-rose-400 hover:underline">Clear All</button>
+                        </div>
+                    </div>
+                    <button id="add-manual-beat-btn" class="w-full py-2 px-3 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 font-semibold text-xs transition-all flex items-center justify-center space-x-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Tap Beat at Current Time (Hotkey: B)</span>
+                    </button>
+                    <div id="manual-beats-list" class="max-h-28 overflow-y-auto custom-scrollbar space-y-1 text-xs text-slate-400">
+                        <p class="text-[11px] italic text-slate-500 text-center py-1">No manual beats added yet. Play audio and tap above.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Background Particles</label>
+                    <select id="particle-effect" class="w-full bg-slate-950 border border-slate-700 text-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                        <option value="none">None</option>
+                        <option value="dust">Floating Dust</option>
+                        <option value="snow">Snowfall</option>
+                        <option value="stars">Twinkling Stars</option>
+                    </select>
                 </div>
             </div>
 
@@ -273,7 +303,7 @@
                 <!-- Progress Bar container -->
                 <div id="progress-container" class="hidden space-y-1">
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span id="progress-label">Encoding video...</span>
+                        <span id="progress-label">Encoding video locally...</span>
                         <span id="progress-pct">0%</span>
                     </div>
                     <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
@@ -287,7 +317,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
-                        <span>Download Final Video</span>
+                        <span>Download Final Video (Local)</span>
                     </a>
                 </div>
             </div>
@@ -351,7 +381,16 @@
         const particleEffectSelect = document.getElementById('particle-effect');
         const bgBlurInput = document.getElementById('bg-blur');
         const bgColorInput = document.getElementById('bg-color');
+        const shakeIntensityInput = document.getElementById('shake-intensity');
         
+        // Auto/Manual Beat Elements
+        const autoShakeToggle = document.getElementById('auto-shake-toggle');
+        const addManualBeatBtn = document.getElementById('add-manual-beat-btn');
+        const clearBeatsBtn = document.getElementById('clear-beats-btn');
+        const manualBeatsListEl = document.getElementById('manual-beats-list');
+        const beatCountEl = document.getElementById('beat-count');
+        let manualBeats = []; // Array of sorted timestamps in seconds
+
         // Progress Bar Elements
         const showProgressCheckbox = document.getElementById('show-progressbar');
         const pbStyleSelect = document.getElementById('pb-style');
@@ -473,6 +512,60 @@
         resetPositionsBtn.addEventListener('click', () => {
             layout = JSON.parse(JSON.stringify(defaultLayout));
             if (!isPlaying && !isRecording) drawStaticFrame();
+        });
+
+        // Manual Beats Management Logic
+        function addManualBeat(timeSec) {
+            if (!audioElement || isNaN(timeSec)) return;
+            // Avoid duplicates close to each other (within 0.05s)
+            if (manualBeats.some(t => Math.abs(t - timeSec) < 0.05)) return;
+            
+            manualBeats.push(timeSec);
+            manualBeats.sort((a, b) => a - b);
+            renderManualBeatsList();
+        }
+
+        function removeManualBeat(index) {
+            manualBeats.splice(index, 1);
+            renderManualBeatsList();
+        }
+
+        function renderManualBeatsList() {
+            beatCountEl.textContent = manualBeats.length;
+            if (manualBeats.length === 0) {
+                manualBeatsListEl.innerHTML = `<p class="text-[11px] italic text-slate-500 text-center py-1">No manual beats added yet. Play audio and tap above.</p>`;
+                return;
+            }
+            let html = '';
+            manualBeats.forEach((t, idx) => {
+                html += `
+                    <div class="flex items-center justify-between bg-slate-900 px-2 py-1 rounded border border-slate-800">
+                        <span>#${idx + 1} - ${formatTime(t)} (${t.toFixed(2)}s)</span>
+                        <button onclick="window.removeManualBeatGlobal(${idx})" class="text-rose-400 hover:text-rose-300 px-1 font-bold">&times;</button>
+                    </div>
+                `;
+            });
+            manualBeatsListEl.innerHTML = html;
+        }
+        window.removeManualBeatGlobal = removeManualBeat;
+
+        addManualBeatBtn.addEventListener('click', () => {
+            if (!audioElement) return;
+            addManualBeat(audioElement.currentTime);
+        });
+
+        clearBeatsBtn.addEventListener('click', () => {
+            manualBeats = [];
+            renderManualBeatsList();
+        });
+
+        // Keyboard Shortcut 'B' for tapping beats
+        window.addEventListener('keydown', (e) => {
+            if ((e.key === 'b' || e.key === 'B') && document.activeElement.tagName !== 'INPUT') {
+                if (audioElement && !audioElement.paused) {
+                    addManualBeat(audioElement.currentTime);
+                }
+            }
         });
 
         audioInput.addEventListener('change', async (e) => {
@@ -644,10 +737,58 @@
             activeDraggable = null;
         });
 
+/************************************************************/
+/* DRAW FRAME WITH AUTO & MANUAL BEAT SHAKE REACTIVITY       */
+/************************************************************/
         function drawFrame() {
             updateCanvasDimensions();
             const width = canvas.width;
             const height = canvas.height;
+
+            let dataArray = new Uint8Array(0);
+            let bassEnergy = 0;
+            if (analyser) {
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(dataArray);
+                let bassSum = 0;
+                for (let i = 0; i < 6; i++) {
+                    bassSum += dataArray[i] || 0;
+                }
+                bassEnergy = bassSum / 6;
+            }
+
+            // Check if current playback time matches any manual beat within a 0.12s window
+            let isManualBeatHit = false;
+            if (audioElement) {
+                const curTime = audioElement.currentTime;
+                isManualBeatHit = manualBeats.some(bt => Math.abs(bt - curTime) <= 0.12);
+            }
+
+            // Compute shake offsets
+            let shakeX = 0;
+            let shakeY = 0;
+            const maxShake = parseInt(shakeIntensityInput.value, 10);
+            const autoShakeEnabled = autoShakeToggle.checked;
+
+            let triggerShake = false;
+            let shakeFactor = 0;
+
+            if (autoShakeEnabled && bassEnergy > 90 && maxShake > 0) {
+                triggerShake = true;
+                shakeFactor = (bassEnergy - 90) / 165;
+            } else if (isManualBeatHit && maxShake > 0) {
+                triggerShake = true;
+                shakeFactor = 1.0; // Full intensity on manual beat tap hit
+            }
+
+            if (triggerShake) {
+                const currentShake = maxShake * shakeFactor;
+                shakeX = (Math.random() - 0.5) * currentShake * 2;
+                shakeY = (Math.random() - 0.5) * currentShake * 2;
+            }
+
+            ctx.save();
+            ctx.translate(shakeX, shakeY);
 
             // 0. Solid Custom Background Layer
             ctx.save();
@@ -679,19 +820,16 @@
             ctx.fillRect(0, 0, width, height);
             ctx.restore();
 
-            // 2. Cover Art Image
-            let dataArray = new Uint8Array(0);
-            if (analyser) {
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                analyser.getByteFrequencyData(dataArray);
-            }
-
+            // 2. Cover Art Image with Pulsate or Beat Reactivity
             const vizStyle = vizStyleSelect.value;
             let pulseScale = 1;
-            if (vizStyle === 'pulsate' && dataArray.length > 0) {
-                let sum = 0;
-                for (let i = 0; i < 10; i++) sum += dataArray[i];
-                pulseScale = 1 + (sum / 255 / 10) * 0.15;
+            if (vizStyle === 'pulsate') {
+                if (autoShakeEnabled && dataArray.length > 0) {
+                    pulseScale = 1 + (bassEnergy / 255) * 0.2;
+                }
+                if (isManualBeatHit) {
+                    pulseScale = Math.max(pulseScale, 1.18);
+                }
             }
 
             ctx.save();
@@ -724,7 +862,8 @@
 
                     for (let i = 0; i < barCount; i++) {
                         const val = dataArray[i] || 0;
-                        const barH = (val / 255) * 60;
+                        let barH = (val / 255) * 60;
+                        if (isManualBeatHit) barH *= 1.4; // boost bars on manual beat
                         ctx.fillStyle = vizColor;
                         ctx.beginPath();
                         ctx.roundRect(i * (barW + gap), -barH / 2, barW, Math.max(barH, 4), 3);
@@ -732,7 +871,7 @@
                     }
                 } else if (vizStyle === 'waveform') {
                     ctx.strokeStyle = vizColor;
-                    ctx.lineWidth = 4;
+                    ctx.lineWidth = isManualBeatHit ? 6 : 4;
                     ctx.beginPath();
                     const wLine = 300;
                     const sliceW = wLine / dataArray.length;
@@ -740,7 +879,8 @@
 
                     for (let i = 0; i < dataArray.length; i++) {
                         const v = dataArray[i] / 128.0;
-                        const y = (v - 1) * 30;
+                        let y = (v - 1) * 30;
+                        if (isManualBeatHit) y *= 1.3;
                         if (i === 0) ctx.moveTo(i * sliceW, y);
                         else ctx.lineTo(i * sliceW, y);
                     }
@@ -755,7 +895,8 @@
 
                     for (let i = 0; i < count; i++) {
                         const val = dataArray[i] || 0;
-                        const barLen = (val / 255) * 40;
+                        let barLen = (val / 255) * 40;
+                        if (isManualBeatHit) barLen *= 1.4;
                         const angle = i * angleStep;
                         const x1 = Math.cos(angle) * radius;
                         const y1 = Math.sin(angle) * radius;
@@ -891,6 +1032,8 @@
                 ctx.restore();
             }
 
+            ctx.restore(); // Restore from shake translation
+
             if (isPlaying && !isRecording) {
                 animationId = requestAnimationFrame(drawFrame);
             }
@@ -948,13 +1091,12 @@
             progressContainer.classList.remove('hidden');
             downloadContainer.classList.add('hidden');
             recordBtnText.textContent = "Stop & Export";
-            statusBadge.textContent = "Encoding Video...";
+            statusBadge.textContent = "Encoding Locally...";
             statusBadge.className = "px-3 py-1 text-xs font-medium rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30";
             isRecording = true;
 
             const canvasStream = canvas.captureStream(30);
             
-            // Safely tap audio stream via destination node without disconnecting monitor output
             const destNode = audioCtx.createMediaStreamDestination();
             try {
                 audioSourceNode.disconnect();
@@ -968,7 +1110,6 @@
                 ...destNode.stream.getAudioTracks()
             ]);
 
-            // Request unlimited timeslice (no chunk time parameter or set to 0/omitted) to allow unlimited continuous recording without splitting blobs
             let options = { mimeType: 'video/webm;codecs=vp9,opus' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm;codecs=vp8,opus' };
             if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
@@ -989,20 +1130,18 @@
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 const videoUrl = URL.createObjectURL(blob);
                 downloadLink.href = videoUrl;
-                downloadLink.download = `AudioVision_${Date.now()}.webm`;
+                downloadLink.download = `AudioVision_BeatShake_${Date.now()}.webm`;
                 downloadContainer.classList.remove('hidden');
                 progressContainer.classList.add('hidden');
                 statusBadge.textContent = "Export Complete!";
                 statusBadge.className = "px-3 py-1 text-xs font-medium rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-                recordBtnText.textContent = "Export Video";
+                recordBtnText.textContent = "Export Video (.webm)";
                 isRecording = false;
             };
 
-            // Started with NO timeslice argument (unlimited recording buffer mode)
             mediaRecorder.start();
             audioElement.play();
 
-            // Background-safe recording timer loop
             recordingTimer = setInterval(() => {
                 if (!isRecording || !audioElement.duration) return;
 
@@ -1011,7 +1150,7 @@
                 const pct = Math.min(100, Math.round((audioElement.currentTime / audioElement.duration) * 100));
                 progressBar.style.width = `${pct}%`;
                 progressPct.textContent = `${pct}%`;
-                progressLabel.textContent = `Encoding video (${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)})...`;
+                progressLabel.textContent = `Encoding local video (${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)})...`;
 
                 if (audioElement.ended || audioElement.currentTime >= audioElement.duration) {
                     stopRecording();
@@ -1029,7 +1168,7 @@
             drawStaticFrame();
         }
 
-        [vizStyleSelect, vizColorInput, aspectRatioSelect, videoResSelect, particleEffectSelect, showProgressCheckbox, pbStyleSelect, pbColorInput, pbHeightInput, showCircleThumbCheckbox, circleColorInput, showTimeTextCheckbox, textTitleInput, textArtistInput, textColorInput, textAlignSelect].forEach(el => {
+        [vizStyleSelect, vizColorInput, aspectRatioSelect, videoResSelect, particleEffectSelect, shakeIntensityInput, autoShakeToggle, showProgressCheckbox, pbStyleSelect, pbColorInput, pbHeightInput, showCircleThumbCheckbox, circleColorInput, showTimeTextCheckbox, textTitleInput, textArtistInput, textColorInput, textAlignSelect].forEach(el => {
             el.addEventListener('input', () => {
                 if (!isPlaying && !isRecording) drawStaticFrame();
             });
